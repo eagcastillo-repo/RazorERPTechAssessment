@@ -18,24 +18,24 @@ public static class UserRouteGroup
             return GetByIdAsync(userService, id);
         });
 
-        group.MapPost("/create", (IAppCreateService<User, UserUpdateDTO> userCreateService, UserUpdateDTO user) =>
+        group.MapPost("/create", (IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, UserUpdateDTO user) =>
         {
             return CreateAsync(userCreateService, user);
         });
 
-        group.MapPatch("/update", (IAppCreateService<User, UserUpdateDTO> userCreateService, User user) =>
+        group.MapPatch("/update", (IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, User user) =>
         {
             return UpdateAsync(userCreateService, user);
         });
 
-        group.MapDelete("/delete/{id}", (IAppCreateService<User, UserUpdateDTO> userCreateService, int id) =>
+        group.MapDelete("/delete/{id}", (IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, int id) =>
         {
             return DeleteAsync(userCreateService, id);
         });
 
-        group.MapPost("/authenticate", (IAppAuthorizeService<UserLoginDTO> userAuthorizeService, UserLoginDTO user) =>
+        group.MapPost("/authenticate", (IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, UserLoginDTO user) =>
         {
-            return Authenticate(userAuthorizeService, user);
+            return Authenticate(userCreateService, user);
         });
 
         return group;
@@ -67,7 +67,7 @@ public static class UserRouteGroup
         }
     }
 
-    private static async Task<IResult> CreateAsync(IAppCreateService<User, UserUpdateDTO> userCreateService, UserUpdateDTO user)
+    private static async Task<IResult> CreateAsync(IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, UserUpdateDTO user)
     {
         try
         {
@@ -80,7 +80,7 @@ public static class UserRouteGroup
         }
     }
 
-    private static async Task<IResult> UpdateAsync(IAppCreateService<User, UserUpdateDTO> userCreateService, User user)
+    private static async Task<IResult> UpdateAsync(IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, User user)
     {
         try
         {
@@ -93,7 +93,7 @@ public static class UserRouteGroup
         }
     }
 
-    private static async Task<IResult> DeleteAsync(IAppCreateService<User, UserUpdateDTO> userCreateService, int id)
+    private static async Task<IResult> DeleteAsync(IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, int id)
     {
         try
         {
@@ -106,11 +106,11 @@ public static class UserRouteGroup
         }
     }
 
-    private static async Task<IResult> Authenticate(IAppAuthorizeService<UserLoginDTO> userAuthorizeService, UserLoginDTO user)
+    private static async Task<IResult> Authenticate(IAppCreateService<User, UserUpdateDTO, UserLoginDTO> userCreateService, UserLoginDTO user)
     {
         try
         {
-            var result = await userAuthorizeService.Authenticate(user);
+            var result = await userCreateService.Authenticate(user);
             return !string.IsNullOrEmpty(result) ? Results.Ok(result) : Results.NotFound();
         }
         catch (Exception ex)

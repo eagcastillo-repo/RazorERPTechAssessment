@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Abstracts\IAppAuthorizeService.cs" />
+    <Compile Remove="Abstracts\IAuthenticationRepository.cs" />
+    <Compile Remove="Repositories\AuthenticationRepository.cs" />
     <Compile Remove="Services\AppService.cs" />
-    <Compile Remove="Services\Company\CompanyService.cs" />
-    <Compile Remove="Services\Role\RoleService.cs" />
+    <Compile Remove="Services\Authentication\AuthenticationService.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,8 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Company\" />
-    <Folder Include="Services\Role\" />
+    <Folder Include="Services\Authentication\" />
   </ItemGroup>
 
 </Project>

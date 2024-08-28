@@ -12,6 +12,4 @@ public class UserLoginDTO
     [DataType(DataType.Password)]
     [MaxLength(100)]
     public string Password { get; set; }
-
-    public Role Role { get; set; }
 }

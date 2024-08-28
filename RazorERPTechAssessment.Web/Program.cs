@@ -2,7 +2,6 @@ using Microsoft.IdentityModel.Tokens;
 using RazorERPTechAssessment.Application.Abstracts;
 using RazorERPTechAssessment.Application.DTO;
 using RazorERPTechAssessment.Application.Repositories;
-using RazorERPTechAssessment.Application.Services.Authentication;
 using RazorERPTechAssessment.Application.Services.User;
 using RazorERPTechAssessment.DapperDB.Context;
 using RazorERPTechAssessment.DapperDB.Entities;
@@ -14,10 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped(typeof(IAppRepository<>), typeof(AppRepository<>));
-builder.Services.AddScoped(typeof(IAuthenticationRepository<>), typeof(AuthenticationRepository<>));
 builder.Services.AddScoped<IAppReadService<User>, UserService>();
-builder.Services.AddScoped<IAppCreateService<User, UserUpdateDTO>, UserService>();
-builder.Services.AddScoped<IAppAuthorizeService<UserLoginDTO>, AuthenticationService>();
+builder.Services.AddScoped<IAppCreateService<User, UserUpdateDTO, UserLoginDTO>, UserService>();
 //builder.Services.AddScoped<IAppReadService<Company>, CompanyService>();
 //builder.Services.AddScoped<IAppReadService<Role>, RoleService>();
 
