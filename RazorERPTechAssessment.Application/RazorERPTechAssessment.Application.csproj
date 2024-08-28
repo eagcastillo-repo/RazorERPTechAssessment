@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\AppService.cs" />
+    <Compile Remove="Services\Company\CompanyService.cs" />
+    <Compile Remove="Services\Role\RoleService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RazorERPTechAssessment.DapperDB\RazorERPTechAssessment.DapperDB.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Company\" />
+    <Folder Include="Services\Role\" />
+  </ItemGroup>
+
+</Project>
