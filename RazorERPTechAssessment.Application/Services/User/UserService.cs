@@ -30,7 +30,7 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
         parameters.Add("Company", createUser.Company);
         parameters.Add("Password", createUser.Password);
 
-        return await _appRepository.CreateAsync(sqlStatement, parameters);
+        return await _appRepository.ExecuteUpdateAsync(sqlStatement, parameters);
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -39,20 +39,35 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
 
-        return await _appRepository.DeleteAsync(sqlStatement, parameters);
+        return await _appRepository.ExecuteUpdateAsync(sqlStatement, parameters);
     }
 
-    public async Task<IEnumerable<DapperDB.Entities.User>> GetAllAsync()
+    public async Task<IEnumerable<DapperDB.Entities.User>> GetAllAsync(string userRole)
     {
         var sqlStatement = "SELECT * FROM dbo.[User]";
-        return await _appRepository.GetAllAsync(sqlStatement);
+
+        if (userRole.Equals("User", StringComparison.OrdinalIgnoreCase))
+        {
+            sqlStatement = sqlStatement + " WHERE Role = @Role";
+        }
+
+        var parameters = new DynamicParameters();
+        parameters.Add("Role", 1);
+
+        return await _appRepository.GetAllAsync(sqlStatement, parameters);
     }
 
-    public async Task<DapperDB.Entities.User> GetByIdAsync(int id)
+    public async Task<DapperDB.Entities.User> GetByIdAsync(int id, string userRole)
     {
         var sqlStatement = "SELECT * FROM dbo.[User] WHERE Id = @Id";
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
+
+        if (userRole.Equals("User", StringComparison.OrdinalIgnoreCase))
+        {
+            sqlStatement = sqlStatement + " AND Role = @Role";
+        }
+        parameters.Add("Role", 1);
 
         return await _appRepository.FindAsync(sqlStatement, parameters);
     }
@@ -67,7 +82,7 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
         parameters.Add("Company", user.Company);
         parameters.Add("Password", user.Password);
 
-        return await _appRepository.UpdateAsync(sqlStatement, parameters);
+        return await _appRepository.ExecuteUpdateAsync(sqlStatement, parameters);
     }
 
     public async Task<string> Authenticate(UserLoginDTO user)
@@ -93,15 +108,14 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         var claims = new[]
         {
-                new Claim(ClaimTypes.NameIdentifier, user.Name),
-                new Claim(ClaimTypes.Role, ((DapperDB.Enums.Role)user.Role).ToString())
-            };
+            new Claim(ClaimTypes.NameIdentifier, user.Name),
+            new Claim(ClaimTypes.Role, ((DapperDB.Enums.Role)user.Role).ToString())
+        };
         var token = new JwtSecurityToken(_config["Jwt:Issuer"],
             _config["Jwt:Audience"],
             claims,
             expires: DateTime.Now.AddMinutes(15),
             signingCredentials: credentials);
-
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

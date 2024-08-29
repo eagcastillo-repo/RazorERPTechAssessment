@@ -1,18 +1,17 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
+using System.Data;
 using System.Data.Common;
 
 namespace RazorERPTechAssessment.DapperDB.Context;
 
 public class DapperContext
 {
-    private readonly IConfiguration _config;
-    private const string _connectionString = "Data Source=EGGHEAD;Initial Catalog=RazorERPTechAssessment;Integrated Security=True;Encrypt=False";
+    private readonly IDbConnection _connection;
 
-    public DapperContext(IConfiguration config)
+    public DapperContext(IDbConnection connection)
     {
-        _config = config;
+        _connection = connection;
     }
 
-    public DbConnection CreateConnection() => new SqlConnection(_connectionString);
+    public DbConnection CreateConnection() => new SqlConnection(_connection.ConnectionString);
 }

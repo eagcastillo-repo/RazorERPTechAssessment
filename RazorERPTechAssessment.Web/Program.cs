@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using RazorERPTechAssessment.Application.Abstracts;
 using RazorERPTechAssessment.Application.DTO;
@@ -6,17 +7,19 @@ using RazorERPTechAssessment.Application.Services.User;
 using RazorERPTechAssessment.DapperDB.Context;
 using RazorERPTechAssessment.DapperDB.Entities;
 using RazorERPTechAssessment.Web.RouteGroup;
+using System.Data;
 using System.Text;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string connectionString = builder.Configuration.GetConnectionString("Demo");
+builder.Services.AddTransient<IDbConnection>((sp) => new SqlConnection(connectionString));
+
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped(typeof(IAppRepository<>), typeof(AppRepository<>));
 builder.Services.AddScoped<IAppReadService<User>, UserService>();
 builder.Services.AddScoped<IAppCreateService<User, UserUpdateDTO, UserLoginDTO>, UserService>();
-//builder.Services.AddScoped<IAppReadService<Company>, CompanyService>();
-//builder.Services.AddScoped<IAppReadService<Role>, RoleService>();
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -48,6 +51,8 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+builder.Services.AddAuthorization();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -61,15 +66,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseRateLimiter();
 
+app.UseAuthentication();
+
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
-
-//app.MapGroup("/companies")
-//    .MapCompanyApi()
-//    .WithTags("Company API");
-
-//app.MapGroup("/roles")
-//    .MapRoleApi()
-//    .WithTags("Role API");
 
 app.MapGroup("/users")
     .MapUserApi()

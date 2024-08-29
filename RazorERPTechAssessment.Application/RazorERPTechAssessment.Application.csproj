@@ -11,15 +11,10 @@
     <Compile Remove="Abstracts\IAuthenticationRepository.cs" />
     <Compile Remove="Repositories\AuthenticationRepository.cs" />
     <Compile Remove="Services\AppService.cs" />
-    <Compile Remove="Services\Authentication\AuthenticationService.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RazorERPTechAssessment.DapperDB\RazorERPTechAssessment.DapperDB.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Authentication\" />
   </ItemGroup>
 
 </Project>

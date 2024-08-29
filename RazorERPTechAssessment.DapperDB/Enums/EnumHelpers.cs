@@ -1,8 +1,13 @@
-﻿namespace RazorERPTechAssessment.DapperDB.Enums;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace RazorERPTechAssessment.DapperDB.Enums;
 
 public enum Role
 {
+    [Display(Name = "Admin")]
     Admin,
+    [Display(Name = "User")]
     User
 }
 

@@ -1,41 +1,23 @@
 ﻿using Dapper;
 using RazorERPTechAssessment.Application.Abstracts;
 using RazorERPTechAssessment.DapperDB.Context;
-using System.Data;
 
 namespace RazorERPTechAssessment.Application.Repositories;
 
 public class AppRepository<T> : IAppRepository<T> where T : class
 {
     private readonly DapperContext _context;
-    private const CommandType _commandType = CommandType.Text;
 
     public AppRepository(DapperContext context)
     {
         _context = context;
     }
 
-    public async Task<bool> CreateAsync<U>(string sqlStatement, U parameters)
+    public async Task<IEnumerable<T>> GetAllAsync<U>(string sqlStatement, U parameter)
     {
         using (var _connection = _context.CreateConnection())
         {
-            return await _connection.ExecuteAsync(sqlStatement, parameters) > 0;
-        }
-    }
-
-    public async Task<bool> DeleteAsync<U>(string sqlStatement, U parameters)
-    {
-        using (var _connection = _context.CreateConnection())
-        {
-            return await _connection.ExecuteAsync(sqlStatement, parameters) > 0;
-        }
-    }
-
-    public async Task<IEnumerable<T>> GetAllAsync(string sqlStatement)
-    {
-        using (var _connection = _context.CreateConnection())
-        {
-            return await _connection.QueryAsync<T>(sqlStatement, _commandType);
+            return await _connection.QueryAsync<T>(sqlStatement, parameter);
         };
     }
 
@@ -47,7 +29,7 @@ public class AppRepository<T> : IAppRepository<T> where T : class
         };
     }
 
-    public async Task<bool> UpdateAsync<U>(string sqlStatement, U parameters)
+    public async Task<bool> ExecuteUpdateAsync<U>(string sqlStatement, U parameters)
     {
         using (var _connection = _context.CreateConnection())
         {

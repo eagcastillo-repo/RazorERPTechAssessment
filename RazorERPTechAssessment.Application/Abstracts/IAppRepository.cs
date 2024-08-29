@@ -2,9 +2,7 @@
 
 public interface IAppRepository<T> where T : class
 {
-    Task<bool> CreateAsync<U>(string sqlStatement, U parameters);
-    Task<bool> DeleteAsync<U>(string sqlStatement, U parameters);
-    Task<IEnumerable<T>> GetAllAsync(string sqlStatement);
+    Task<IEnumerable<T>> GetAllAsync<U>(string sqlStatement, U parameters);
     Task<T> FindAsync<U>(string sqlStatement, U parameters);
-    Task<bool> UpdateAsync<U>(string sqlStatement, U parameters);
+    Task<bool> ExecuteUpdateAsync<U>(string sqlStatement, U parameters);
 }
