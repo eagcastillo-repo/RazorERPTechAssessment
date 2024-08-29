@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using RazorERPTechAssessment.Application.Abstracts;
 using RazorERPTechAssessment.DapperDB.Context;
+using System.Data;
 
 namespace RazorERPTechAssessment.Application.Repositories;
 
@@ -13,19 +14,11 @@ public class AppRepository<T> : IAppRepository<T> where T : class
         _context = context;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync<U>(string sqlStatement, U parameter)
+    public async Task<IEnumerable<T>> ExecuteReadAsync<U>(string sqlStatement, U parameter)
     {
         using (var _connection = _context.CreateConnection())
         {
             return await _connection.QueryAsync<T>(sqlStatement, parameter);
-        };
-    }
-
-    public async Task<T> FindAsync<U>(string sqlStatement, U parameters)
-    {
-        using (var _connection = _context.CreateConnection())
-        {
-            return await _connection.QueryFirstOrDefaultAsync<T>(sqlStatement, parameters);
         };
     }
 

@@ -45,19 +45,18 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
     public async Task<IEnumerable<DapperDB.Entities.User>> GetAllAsync(string userRole)
     {
         var sqlStatement = "SELECT * FROM dbo.[User]";
+        var parameters = new DynamicParameters();
 
         if (userRole.Equals("User", StringComparison.OrdinalIgnoreCase))
         {
             sqlStatement = sqlStatement + " WHERE Role = @Role";
+            parameters.Add("Role", 1);
         }
 
-        var parameters = new DynamicParameters();
-        parameters.Add("Role", 1);
-
-        return await _appRepository.GetAllAsync(sqlStatement, parameters);
+        return await _appRepository.ExecuteReadAsync(sqlStatement, parameters);
     }
 
-    public async Task<DapperDB.Entities.User> GetByIdAsync(int id, string userRole)
+    public async Task<DapperDB.Entities.User?> GetByIdAsync(int id, string userRole)
     {
         var sqlStatement = "SELECT * FROM dbo.[User] WHERE Id = @Id";
         var parameters = new DynamicParameters();
@@ -66,10 +65,12 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
         if (userRole.Equals("User", StringComparison.OrdinalIgnoreCase))
         {
             sqlStatement = sqlStatement + " AND Role = @Role";
+            parameters.Add("Role", 1);
         }
-        parameters.Add("Role", 1);
 
-        return await _appRepository.FindAsync(sqlStatement, parameters);
+        var user = await _appRepository.ExecuteReadAsync(sqlStatement, parameters);
+
+        return user.FirstOrDefault();
     }
 
     public async Task<bool> UpdateAsync(DapperDB.Entities.User user)
@@ -92,11 +93,11 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
         parameters.Add("Name", user.Name);
         parameters.Add("Password", user.Password);
 
-        var authorizedUser = await _appRepository.FindAsync(sqlStatement, parameters);
+        var authorizedUser = await _appRepository.ExecuteReadAsync(sqlStatement, parameters);
 
-        if (authorizedUser != null)
+        if (authorizedUser.Count() > 0)
         {
-            return GenerateToken(authorizedUser);
+            return GenerateToken(authorizedUser.FirstOrDefault());
         }
 
         return string.Empty;
