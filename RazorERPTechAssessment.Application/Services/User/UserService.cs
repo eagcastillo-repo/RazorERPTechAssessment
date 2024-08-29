@@ -74,7 +74,7 @@ public class UserService : IAppReadService<DapperDB.Entities.User>, IAppCreateSe
 
     public async Task<bool> UpdateAsync(DapperDB.Entities.User user)
     {
-        var sqlStatement = "UPDATE dbo.[User] SET Name = @Name, Role = @Role, Company = @Company, Passwor = @Password WHERE Id = @Id";
+        var sqlStatement = "UPDATE dbo.[User] SET Name = @Name, Role = @Role, Company = @Company, Password = @Password WHERE Id = @Id";
         var parameters = new DynamicParameters();
         parameters.Add("Id", user.Id);
         parameters.Add("Name", user.Name);
