@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using RazorERPTechAssessment.Application.Abstracts;
 using RazorERPTechAssessment.DapperDB.Context;
-using System.Data;
 
 namespace RazorERPTechAssessment.Application.Repositories;
 
